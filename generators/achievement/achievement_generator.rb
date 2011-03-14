@@ -4,9 +4,9 @@ class AchievementGenerator < Rails::Generator::NamedBase
       m.class_collisions class_name, "#{class_name}"
       m.class_collisions class_name, "#{class_name}Observer"
       
-      m.directory 'app/models/achievements'
-      m.template "achievement.rb", "app/models/achievements/#{file_name}.rb"
-      m.template "achievement_observer.rb", "app/models/achievements/#{file_name}_observer.rb"
+      m.directory 'app/achievements'
+      m.template "achievement.rb", "app/achievements/#{file_name}.rb"
+      m.template "achievement_observer.rb", "app/achievements/#{file_name}_observer.rb"
     end
   end
 
@@ -17,11 +17,11 @@ Your new achievement, '#{class_name}' has been created.
 
 Now you need to edit:
 
-    app/models/achievements/#{file_name}.rb
+    app/achievements/#{file_name}.rb
 
 and
 
-    app/models/achievements/#{file_name}_observer.rb
+    app/achievements/#{file_name}_observer.rb
 
 Then you need to activate the observer, by adding ':#{file_name}_observer' to environment.rb, eg:
 
