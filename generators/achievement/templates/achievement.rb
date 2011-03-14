@@ -1,12 +1,14 @@
 class <%= class_name %> < Achievement
   
-  # level 1, :quota => 5
+  # level 1, :quota => 5, :level_name => ''
   # level 2, :quota => 10
   # level 3, :quota => 30
   # level 4, :quota => 100
   # level 5, :quota => 500
   
   # set_thing_to_check { |user| ... }
+
+  # set_description_string { |count| "added something of interest..."}
 
   # Comment out below for multi-level achievements
   # def self.award_achievements_for(user)

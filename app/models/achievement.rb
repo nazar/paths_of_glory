@@ -19,7 +19,7 @@ class Achievement < ActiveRecord::Base
     end
 
     def level(level, options = {})
-      levels << {:level => level, :quota => options[:quota]}
+      levels << {:level => level, :quota => options[:quota], :level_name => options[:level_name]}
     end
     
     def set_thing_to_check(&block)
@@ -28,6 +28,14 @@ class Achievement < ActiveRecord::Base
     
     def thing_to_check(object)
       @thing_to_check.call(object)
+    end
+
+    def set_description_string(&block)
+      @badge_description = block
+    end
+
+    def description_string(count)
+      @badge_description.call(count)
     end
     
     def select_level(level)
