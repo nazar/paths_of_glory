@@ -19,7 +19,7 @@ class Achievement < ActiveRecord::Base
     end
 
     def level(level, options = {})
-      levels << {:level => level, :quota => options[:quota]}
+      levels << {:level => level, :quota => options[:quota], :level_name => options[:level_name]}
     end
     
     def set_thing_to_check(&block)
@@ -29,6 +29,14 @@ class Achievement < ActiveRecord::Base
     def thing_to_check(object)
       @thing_to_check.call(object)
     end
+
+    def set_description_string(&block)
+      @badge_description = block
+    end
+
+    def description_string(count)
+      @badge_description.call(count)
+    end
     
     def select_level(level)
       levels.select { |l| l[:level] == level }.first
@@ -36,6 +44,14 @@ class Achievement < ActiveRecord::Base
     
     def quota_for(level)
       select_level(level)[:quota] if select_level(level)
+    end
+
+    def name_for(level)
+      select_level(level)[:level_name] if select_level(level)
+    end
+
+    def description_for(level)
+      description_string quota_for(level)
     end
     
     def has_level?(level)
@@ -69,5 +85,16 @@ class Achievement < ActiveRecord::Base
         return nil
       end
     end
+
+    def process_count_based_achievement(user)
+      count = thing_to_check(user)
+      levels.each do |level|
+        break if count < level[:quota]
+        if (not user.has_achievement?(self, level[:level])) and count >= level[:quota]
+          user.award_achievement(self, level[:level])
+        end
+      end
+    end
+
   end
 end

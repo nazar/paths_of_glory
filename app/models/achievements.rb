@@ -10,8 +10,12 @@ module Achievements
     end
   end
 
-  def award_achievement(achievement, level = nil)
-    achievement.create!(:user => self, :level => level)
+  def award_achievement(achievement, level = nil, level_name = nil, description = nil)
+    unless level.nil?
+      level_name  ||= achievement.name_for(level)
+      description ||= achievement.description_for(level)
+    end
+    achievement.create!(:user => self, :level => level, :level_name => level_name, :description => description )
   end
   
   def has_achievement?(achievement, level = nil)
