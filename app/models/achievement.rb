@@ -45,6 +45,14 @@ class Achievement < ActiveRecord::Base
     def quota_for(level)
       select_level(level)[:quota] if select_level(level)
     end
+
+    def name_for(level)
+      select_level(level)[:level_name] if select_level(level)
+    end
+
+    def description_for(level)
+      description_string quota_for(level)
+    end
     
     def has_level?(level)
       select_level(level).present?
@@ -77,5 +85,16 @@ class Achievement < ActiveRecord::Base
         return nil
       end
     end
+
+    def process_count_based_achievement(user)
+      count = thing_to_check(user)
+      levels.each do |level|
+        break if count < level[:quota]
+        if (not user.has_achievement?(self, level[:level])) and count >= level[:quota]
+          user.award_achievement(self, level[:level])
+        end
+      end
+    end
+
   end
 end
