@@ -12,7 +12,7 @@ class Achievement < ActiveRecord::Base
   
   named_scope :order, lambda { |order| {:order => order} }
   named_scope :limit, lambda { |limit| {:limit => limit} }
-  
+
   class << self
     def levels
       @levels ||= []
@@ -32,6 +32,14 @@ class Achievement < ActiveRecord::Base
 
     def set_description_string(&block)
       @badge_description = block
+    end
+
+    def on_rating_achieved(&block)
+      @rating_achieved_callback = block
+    end
+
+    def do_rating_achieved(badge)
+      @rating_achieved_callback.call(badge) unless @rating_achieved_callback.nil?
     end
 
     def description_string(count)
@@ -91,7 +99,7 @@ class Achievement < ActiveRecord::Base
       levels.each do |level|
         break if count < level[:quota]
         if (not user.has_achievement?(self, level[:level])) and count >= level[:quota]
-          user.award_achievement(self, level[:level])
+           do_rating_achieved user.award_achievement(self, level[:level])
         end
       end
     end
