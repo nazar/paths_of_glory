@@ -96,8 +96,10 @@ class Achievement < ActiveRecord::Base
 
     def process_count_based_achievement(user)
       count = thing_to_check(user)
+      current = current_level(user)
       levels.each do |level|
         break if count < level[:quota]
+        next if level[:level].to_i < current
         if (not user.has_achievement?(self, level[:level])) and count >= level[:quota]
            do_rating_achieved user.award_achievement(self, level[:level])
         end
